@@ -19,8 +19,8 @@
  * 
  ******************************************************************/
 
-#ifndef __SparkFun_Qwiic_Humidity_AHT20_H__
-#define __SparkFun_Qwiic_Humidity_AHT20_H__
+#ifndef AHT20_H
+#define AHT20_H
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -37,7 +37,6 @@ enum registers
 class AHT20
 {
 private:
-    TwoWire *_i2cPort; //The generic connection to user's chosen I2C hardware
     uint8_t _deviceAddress;
     bool measurementStarted = false;
 
@@ -55,7 +54,7 @@ private:
 
 public:
     //Device status
-    bool begin(TwoWire &wirePort = Wire); //Sets the address of the device and opens the I2C bus
+    bool begin();                  //Sets the address of the device
     bool isConnected();                   //Checks if the AHT20 is connected to the I2C bus
     bool available();                     //Returns true if new data is available
 

@@ -23,13 +23,11 @@
  * Distributed as-is; no warranty is given.
  ***************************************************************/
 
-#include <SparkFun_Qwiic_Humidity_AHT20.h>
+#include <AHT20.h>
 
 /*--------------------------- Device Status ------------------------------*/
-bool AHT20::begin(TwoWire &wirePort)
+bool AHT20::begin()
 {
-    _i2cPort = &wirePort; //Grab the port the user wants to communicate on
-
     _deviceAddress = AHT20_DEFAULT_ADDRESS; //We had hoped the AHT20 would support two addresses but it doesn't seem to
 
     if (isConnected() == false)
@@ -80,16 +78,16 @@ bool AHT20::begin(TwoWire &wirePort)
 //If we get a response, we are correctly communicating with the AHT20
 bool AHT20::isConnected()
 {
-    _i2cPort->beginTransmission(_deviceAddress);
-    if (_i2cPort->endTransmission() == 0)
+    Wire.beginTransmission(_deviceAddress);
+    if (Wire.endTransmission() == 0)
         return true;
 
     //If IC failed to respond, give it 20ms more for Power On Startup
     //Datasheet pg 7
     delay(20);
 
-    _i2cPort->beginTransmission(_deviceAddress);
-    if (_i2cPort->endTransmission() == 0)
+    Wire.beginTransmission(_deviceAddress);
+    if (Wire.endTransmission() == 0)
         return true;
 
     return false;
@@ -99,9 +97,9 @@ bool AHT20::isConnected()
 
 uint8_t AHT20::getStatus()
 {
-    _i2cPort->requestFrom(_deviceAddress, (uint8_t)1);
-    if (_i2cPort->available())
-        return (_i2cPort->read());
+    Wire.requestFrom(_deviceAddress, (uint8_t)1);
+    if (Wire.available())
+        return (Wire.read());
     return (0);
 }
 
@@ -119,22 +117,22 @@ bool AHT20::isBusy()
 
 bool AHT20::initialize()
 {
-    _i2cPort->beginTransmission(_deviceAddress);
-    _i2cPort->write(sfe_aht20_reg_initialize);
-    _i2cPort->write((uint8_t)0x08);
-    _i2cPort->write((uint8_t)0x00);
-    if (_i2cPort->endTransmission() == 0)
+    Wire.beginTransmission(_deviceAddress);
+    Wire.write(sfe_aht20_reg_initialize);
+    Wire.write((uint8_t)0x08);
+    Wire.write((uint8_t)0x00);
+    if (Wire.endTransmission() == 0)
         return true;
     return false;
 }
 
 bool AHT20::triggerMeasurement()
 {
-    _i2cPort->beginTransmission(_deviceAddress);
-    _i2cPort->write(sfe_aht20_reg_measure);
-    _i2cPort->write((uint8_t)0x33);
-    _i2cPort->write((uint8_t)0x00);
-    if (_i2cPort->endTransmission() == 0)
+    Wire.beginTransmission(_deviceAddress);
+    Wire.write(sfe_aht20_reg_measure);
+    Wire.write((uint8_t)0x33);
+    Wire.write((uint8_t)0x00);
+    if (Wire.endTransmission() == 0)
         return true;
     return false;
 }
@@ -146,21 +144,21 @@ void AHT20::readData()
     sensorData.temperature = 0;
     sensorData.humidity = 0;
 
-    if (_i2cPort->requestFrom(_deviceAddress, (uint8_t)6) > 0)
+    if (Wire.requestFrom(_deviceAddress, (uint8_t)6) > 0)
     {
-        _i2cPort->read(); // Read and discard state
+        Wire.ead(); // Read and discard state
 
         uint32_t incoming = 0;
-        incoming |= (uint32_t)_i2cPort->read() << (8 * 2);
-        incoming |= (uint32_t)_i2cPort->read() << (8 * 1);
-        uint8_t midByte = _i2cPort->read();
+        incoming |= (uint32_t)Wire.read() << (8 * 2);
+        incoming |= (uint32_t)Wire.read() << (8 * 1);
+        uint8_t midByte = Wire.read();
 
         incoming |= midByte;
         sensorData.humidity = incoming >> 4;
 
         sensorData.temperature = (uint32_t)midByte << (8 * 2);
-        sensorData.temperature |= (uint32_t)_i2cPort->read() << (8 * 1);
-        sensorData.temperature |= (uint32_t)_i2cPort->read() << (8 * 0);
+        sensorData.temperature |= (uint32_t)Wire.read() << (8 * 1);
+        sensorData.temperature |= (uint32_t)Wire.read() << (8 * 0);
 
         //Need to get rid of data in bits > 20
         sensorData.temperature = sensorData.temperature & ~(0xFFF00000);
@@ -196,9 +194,9 @@ bool AHT20::available()
 
 bool AHT20::softReset()
 {
-    _i2cPort->beginTransmission(_deviceAddress);
-    _i2cPort->write(sfe_aht20_reg_reset);
-    if (_i2cPort->endTransmission() == 0)
+    Wire.beginTransmission(_deviceAddress);
+    Wire.write(sfe_aht20_reg_reset);
+    if (Wire.endTransmission() == 0)
         return true;
     return false;
 }
