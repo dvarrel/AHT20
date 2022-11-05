@@ -26,10 +26,13 @@
 #include <AHT20.h>
 
 /*--------------------------- Device Status ------------------------------*/
+AHT20::AHT20(const uint8_t deviceAddress)
+{
+  _deviceAddress = deviceAddress;
+}
+
 bool AHT20::begin()
 {
-    _deviceAddress = AHT20_DEFAULT_ADDRESS; //We had hoped the AHT20 would support two addresses but it doesn't seem to
-
     if (isConnected() == false)
         return false;
 
@@ -146,7 +149,7 @@ void AHT20::readData()
 
     if (Wire.requestFrom(_deviceAddress, (uint8_t)6) > 0)
     {
-        Wire.ead(); // Read and discard state
+        Wire.read(); // Read and discard state
 
         uint32_t incoming = 0;
         incoming |= (uint32_t)Wire.read() << (8 * 2);

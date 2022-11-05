@@ -53,6 +53,7 @@ private:
     } sensorQueried;
 
 public:
+    explicit AHT20(const uint8_t deviceAddress = AHT20_DEFAULT_ADDRESS);
     //Device status
     bool begin();                  //Sets the address of the device
     bool isConnected();                   //Checks if the AHT20 is connected to the I2C bus
