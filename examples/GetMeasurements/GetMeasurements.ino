@@ -18,8 +18,7 @@
    Distributed as-is; no warranty is given.
  **************************************************************************/
 #include <Wire.h>
-
-#include <SparkFun_Qwiic_Humidity_AHT20.h> //Click here to get the library: http://librarymanager/All#Qwiic_Humidity_AHT20 by SparkFun
+#include <AHT20.h>
 AHT20 humiditySensor;
 
 void setup()
