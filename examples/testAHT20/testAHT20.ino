@@ -1,35 +1,19 @@
 /**************************************************************************
-   Tests the getTemperature and getHumidity functions of the Qwiic Humidity
-   library
-
-   Priyanka Makin @ SparkFun Electronics
-   Original Creation Date: March 31, 2020
-
-   SparkFun labored with love to create this code. Feel like supporting open
-   source hardware? Buy a board from SparkFun! https://www.sparkfun.com/products/16618
-
-   This code is lemonadeware; if you see me (or any other SparkFun employee)
-   at the local, and you've found our code helpful, please buy us a round!
-
-   Hardware Connections:
-   Attach a RedBoard to computer using micro-B USB cable.
-   Attach a Qwiic Humidity board to RedBoard using Qwiic cable.
-
-   Distributed as-is; no warranty is given.
+   Tests the getTemperature and getHumidity functions of the aht20 library
  **************************************************************************/
 #include <Wire.h>
 #include <AHT20.h>
-AHT20 humiditySensor;
+AHT20 aht20;
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Qwiic Humidity AHT20 examples");
+  Serial.println("Humidity AHT20 examples");
 
   Wire.begin(); //Join I2C bus
 
   //Check if the AHT20 will acknowledge
-  if (humiditySensor.begin() == false)
+  if (aht20.begin() == false)
   {
     Serial.println("AHT20 not detected. Please check wiring. Freezing.");
     while (1);
@@ -40,11 +24,11 @@ void setup()
 void loop()
 {
   //If a new measurement is available
-  if (humiditySensor.available() == true)
+  if (aht20.available() == true)
   {
     //Get the new temperature and humidity value
-    float temperature = humiditySensor.getTemperature();
-    float humidity = humiditySensor.getHumidity();
+    float temperature = aht20.getTemperature();
+    float humidity = aht20.getHumidity();
 
     //Print the results
     Serial.print("Temperature: ");
