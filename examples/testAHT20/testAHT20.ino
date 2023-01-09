@@ -11,7 +11,6 @@ void setup()
   Serial.println("Humidity AHT20 examples");
 
   Wire.begin(); //Join I2C bus
-
   //Check if the AHT20 will acknowledge
   if (aht20.begin() == false)
   {
