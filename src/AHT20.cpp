@@ -191,6 +191,12 @@ bool AHT20::available()
     }
 
     readData();
+    
+    if (sensorData.humidity < 0.1 && sensorData.temperature < -49)
+    {
+        return (false);
+    }
+
     measurementStarted = false;
     return (true);
 }
